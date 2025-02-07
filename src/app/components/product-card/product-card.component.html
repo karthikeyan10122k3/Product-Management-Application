@@ -1,0 +1,21 @@
+<div 
+  class="card shadow-lg rounded-3 border-0 overflow-hidden" 
+  [ngClass]="getCardClass(product.price)" 
+  style="width: 18rem; transition: background-color 0.3s ease;">
+  
+  <img [src]="product.image" class="card-img-top" [alt]="product.category" style="height: 200px; object-fit: contain;">
+  
+  <div class="card-body text-center">
+    <h5 class="card-title fw-bold text-dark">{{ product.title }}</h5>
+    <p class="card-text text-dark">{{ product.description }}</p>
+    <p class="card-text text-dark">{{ product.price }}$</p>
+    
+    <div class="mt-3">
+      <i 
+        [class]="product.isFavorite ? 'fa-solid fa-heart fa-lg' : 'fa-regular fa-heart fa-lg'"
+        style="color: #FF00FF; cursor: pointer;" 
+        (click)="favoriteToggle(product.id)">
+      </i>
+    </div>
+  </div>
+</div>
