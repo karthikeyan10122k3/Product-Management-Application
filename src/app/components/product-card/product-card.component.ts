@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../../core/interface/product';
-import { NgClass } from '@angular/common';
+import { CommonModule, CurrencyPipe, NgClass, NgIf, UpperCasePipe } from '@angular/common';
+import { ShorteningDescriptionPipe } from '../../core/pipes/shorteningDescriptions/shortening-description.pipe';
 
 @Component({
   selector: 'app-product-card',
-  imports : [NgClass],
+  imports : [NgClass, NgIf, UpperCasePipe, CurrencyPipe, ShorteningDescriptionPipe],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'
 })

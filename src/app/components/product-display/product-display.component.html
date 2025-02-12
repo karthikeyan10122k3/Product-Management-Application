@@ -1,14 +1,21 @@
 <section class="mt-4">
+    <!-- Toggle Switch -->
     <div class="form-check form-switch mb-4 ms-5">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" (click)="toggleFavoriteSwitch()" >
-        <label>{{ showFavoriteList ? 'Click to Show All Products' : 'Click to Show Favorites' }}</label>
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" (click)="toggleFavoriteSwitch()">
+        <label for="flexSwitchCheckChecked">
+            {{ showFavoriteList ? 'Click to Show All Products' : 'Click to Show Favorites' }}
+        </label>
     </div>
+
+    <div *ngIf="showFavoriteList && favoriteList.length === 0" class="ms-5" class="text-danger fw-bold container">
+        No Products in Favorite
+    </div>
+
     <div class="card-container">
-            <app-product-card 
+        <app-product-card 
             *ngFor="let product of (showFavoriteList ? favoriteList : productList)" 
-            [product] = "product" 
-            (selectedProductId)="handleProductSelection($event)"></app-product-card>
+            [product]="product" 
+            (selectedProductId)="handleProductSelection($event)">
+        </app-product-card>
     </div>
-
 </section>
-

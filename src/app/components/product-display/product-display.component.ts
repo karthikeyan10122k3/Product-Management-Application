@@ -1,12 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { Product } from '../../core/interface/product';
-import { HttpClient } from '@angular/common/http';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
+import { ProductApiCallsService } from '../../core/services/productApiCall/product-api-calls.service';
 
 @Component({
   selector: 'app-product-display',
-  imports: [ProductCardComponent, NgFor],
+  imports: [ProductCardComponent, NgFor,NgIf],
   templateUrl: './product-display.component.html',
   styleUrl: './product-display.component.css'
 })
@@ -15,31 +15,25 @@ export class ProductDisplayComponent implements OnInit {
   favoriteList: Product[] = [];
   showFavoriteList: boolean = false;
 
-  http = inject(HttpClient);
+  productFetchService = inject(ProductApiCallsService);
 
   ngOnInit() {
-    this.getProducts();
-  }
-
-  getProducts() {
-    this.http.get<Product[]>('https://fakestoreapi.com/products').subscribe((result) => {
-      this.productList = result.map(product => ({ 
-        ...product, isFavorite: false 
-      }));
-    });
+    this.productFetchService.fetchProducts();
+    
+    this.productFetchService.getProducts().subscribe(result=>{
+      this.productList = result
+    })
   }
 
   handleProductSelection(productId: number) {
-    const product = this.productList.find(product => product.id === productId);
-    if (!product) {
-      throw new Error("Invalid Product ID");
-    }
-
-    product.isFavorite = !product.isFavorite; 
-
-    this.favoriteList = this.productList.filter(p => p.isFavorite);
-    
+    const updatedProductList = this.productList.map(product =>
+      product.id === productId ? { ...product, isFavorite: !product.isFavorite } : product
+    );
+  
+    this.productFetchService.updateProductsBehaviourSubject(updatedProductList);
+    this.favoriteList = updatedProductList.filter(p => p.isFavorite);
   }
+  
 
   toggleFavoriteSwitch() {
     this.showFavoriteList = !this.showFavoriteList;
