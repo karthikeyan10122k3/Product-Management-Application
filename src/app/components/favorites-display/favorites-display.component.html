@@ -1,0 +1,12 @@
+<div *ngIf="favoriteList.length===0" class="d-flex justify-content-center align-items-center mt-5">
+    <p class="text-danger fw-bold">No products in Favorites</p>
+</div>
+
+<div class="card-container mt-5">
+    <app-product-card
+    *ngFor="let product of favoriteList"
+    [product]="product"
+    (selectedProductId)="handleFavoriteSelection($event)"
+    ></app-product-card>
+</div>
+

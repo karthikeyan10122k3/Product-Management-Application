@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Product } from '../../core/interface/product';
-import { CommonModule, CurrencyPipe, NgClass, NgIf, UpperCasePipe } from '@angular/common';
-import { ShorteningDescriptionPipe } from '../../core/pipes/shorteningDescriptions/shortening-description.pipe';
+import { Product } from '../../interface/product';
+import { CurrencyPipe, NgClass, NgIf, UpperCasePipe } from '@angular/common';
+import { ShorteningDescriptionPipe } from '../../pipes/shorteningDescriptions/shortening-description.pipe';
 
 @Component({
   selector: 'app-product-card',
@@ -9,8 +9,10 @@ import { ShorteningDescriptionPipe } from '../../core/pipes/shorteningDescriptio
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'
 })
+
 export class ProductCardComponent {
   @Input() product!: Product;
+  @Input() favorite!: Product;
   @Output() selectedProductId = new EventEmitter<number>();
 
   constructor() {}

@@ -1,41 +1,88 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ProductCardComponent } from '../product-card/product-card.component';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { ProductCardComponent } from '../../core/reuseables/product-card/product-card.component';
 import { Product } from '../../core/interface/product';
-import { NgFor, NgIf } from '@angular/common';
-import { ProductApiCallsService } from '../../core/services/productApiCall/product-api-calls.service';
+import { NgFor } from '@angular/common';
+import { SearchProductService } from '../../core/services/searchProduct/search-product.service';
+import { ProductsService } from '../../core/services/productsService/products.service';
+import { FavoriteService } from '../../core/services/favoritesService/favorite.service';
 
 @Component({
   selector: 'app-product-display',
-  imports: [ProductCardComponent, NgFor,NgIf],
+  imports: [ProductCardComponent, NgFor],
   templateUrl: './product-display.component.html',
   styleUrl: './product-display.component.css'
 })
 export class ProductDisplayComponent implements OnInit {
-  productList: Product[] = [];
-  favoriteList: Product[] = [];
-  showFavoriteList: boolean = false;
+  
+  productList: Product[];
+  searchedProductList: Product[];
+  searchInput = signal("")
 
-  productFetchService = inject(ProductApiCallsService);
+  ProductsService = inject(ProductsService);
+  favoriteService = inject(FavoriteService);
+  searchInputService  = inject(SearchProductService);
+
+  constructor(){
+    this.productList = []
+    this.searchedProductList = []
+    
+    effect(()=>{
+      this.checkSearchedProduct()
+    })
+  }
 
   ngOnInit() {
-    this.productFetchService.fetchProducts();
-    
-    this.productFetchService.getProducts().subscribe(result=>{
+    this.ProductsService.fetchProducts()
+    this.getProducts()
+    this.getSearchedInput()
+    this.getSearchedProductList()
+  }
+
+  getProducts(){
+    this.ProductsService.getProducts().subscribe(result=>{
       this.productList = result
     })
   }
 
-  handleProductSelection(productId: number) {
-    const updatedProductList = this.productList.map(product =>
-      product.id === productId ? { ...product, isFavorite: !product.isFavorite } : product
-    );
-  
-    this.productFetchService.updateProductsBehaviourSubject(updatedProductList);
-    this.favoriteList = updatedProductList.filter(p => p.isFavorite);
+  getSearchedInput(){
+    this.searchInputService.getSearchedInput().subscribe(result=>{
+      this.searchInput.set(result)
+    })
   }
-  
 
-  toggleFavoriteSwitch() {
-    this.showFavoriteList = !this.showFavoriteList;
+  getSearchedProductList(){
+    this.searchInputService.getSearchedProductList().subscribe(result=>{
+      this.searchedProductList = result
+    })
   }
+
+  checkSearchedProduct(){
+    const currentSearchedProductList = this.productList.filter((prod)=>{
+      return prod.title.toLowerCase().includes(this.searchInput().toLowerCase())
+    })
+    this.searchInputService.updateSearchedProductList(currentSearchedProductList)
+    this.getSearchedProductList();
+  }
+
+  handleFavoriteSelection(productId: number) {
+    
+    const searchedProductToast = this.searchedProductList.find(p => p.id === productId);
+  
+    if (searchedProductToast) {
+      const isAddingToFavorites = !searchedProductToast.isFavorite;
+  
+      this.ProductsService.handleFavoriteSelection(productId);
+  
+      if (isAddingToFavorites) {
+        const toast = document.getElementById('favoriteToast');
+        if (toast) {
+          toast.classList.add('show');
+          setTimeout(() => {
+            toast.classList.remove('show'); 
+          }, 2000);
+        }
+      }
+    }
+  }
+  
 }

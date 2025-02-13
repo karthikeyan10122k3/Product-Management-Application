@@ -1,9 +1,13 @@
 <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand">Product Management</a>
+      <a class="navbar-brand ms-3" ><span class="text-primary cursor-pointer" routerLink="/home">Product Management App </span> - Karthikeyan R</a>
       <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <input class="form-control me-2" type="search" placeholder="Search" name="search" [(ngModel)]="search" (ngModelChange)="searchInputChange()">
+        <!-- <button class="btn btn-outline-success me-3" type="submit" >Search</button> -->
+        <a routerLink="/favorites" class="mt-2 me-3 ms-2">
+          <i class="fa-solid fa-cart-shopping fa-2xl" style="color: #ff0000;"></i>
+        </a>
       </form>
     </div>
   </nav>
+  <router-outlet></router-outlet>
