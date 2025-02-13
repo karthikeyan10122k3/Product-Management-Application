@@ -1,0 +1,7 @@
+{
+  "routes": {
+    "/Product-Management-Application": {},
+    "/Product-Management-Application/favorites": {},
+    "/Product-Management-Application/home": {}
+  }
+}
